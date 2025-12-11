@@ -2,12 +2,12 @@ use std::sync::Arc;
 use axum::body::Body;
 use axum::extract::Request;
 use axum::http::header::AUTHORIZATION;
-use axum::http::{Method, Response};
+use axum::http::{Method, Response, StatusCode};
 use axum::middleware::Next;
 use serde_json::{Map, Value};
 use crate::state::AppState;
 
-pub async fn authorize(state: Arc<AppState>, req: Request, next: Next) -> Result<Response<Body>, String> {
+pub async fn authorize(state: Arc<AppState>, req: Request, next: Next) -> Result<Response<Body>, (StatusCode, String)> {
     if req.method() == Method::OPTIONS {
         return Ok(next.run(req).await);
     }
@@ -49,6 +49,6 @@ pub async fn authorize(state: Arc<AppState>, req: Request, next: Next) -> Result
     }
 }
 
-fn create_unauthorized() -> Result<Response<Body>, String> {
-    Err(String::new())
+fn create_unauthorized() -> Result<Response<Body>, (StatusCode, String)> {
+    Err((StatusCode::UNAUTHORIZED, String::new()))
 }
