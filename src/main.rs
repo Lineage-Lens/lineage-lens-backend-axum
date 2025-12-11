@@ -1,4 +1,5 @@
 mod api;
+mod crud;
 mod models;
 
 use std::net::{IpAddr, Ipv4Addr};
