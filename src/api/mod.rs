@@ -1,18 +1,32 @@
 mod person;
 
 use crate::state::AppState;
+use axum::http::{header, HeaderValue, Method};
 use std::net::{IpAddr, SocketAddr};
 use std::sync::Arc;
 use tokio::net::TcpListener;
+use tower_http::cors::{AllowOrigin, CorsLayer};
 
 pub async fn start_server(ip_addr: IpAddr, port: u16, state: AppState) {
     let state1 = Arc::new(state);
 
     let person_router = person::router(state1);
 
-    let app = person_router;
+    let app = person_router
+        .layer(create_cors_layer());
 
     let address = SocketAddr::new(ip_addr, port);
     let listener = TcpListener::bind(address).await.unwrap();
     axum::serve(listener, app).await.unwrap();
+}
+
+fn create_cors_layer() -> CorsLayer {
+    let allowed_origins = std::env::var("ALLOWED_ORIGINS").unwrap();
+    let allowed_origins: Vec<String> = serde_json::from_str(allowed_origins.as_str()).unwrap();
+
+    CorsLayer::new()
+        .allow_origin(AllowOrigin::list(allowed_origins.iter().map(|e| HeaderValue::from_str(e.as_str()).unwrap())))
+        .allow_credentials(true)
+        .allow_methods(vec![Method::GET, Method::POST, Method::OPTIONS])
+        .allow_headers(vec![header::AUTHORIZATION, header::ACCEPT, header::CONTENT_TYPE])
 }
