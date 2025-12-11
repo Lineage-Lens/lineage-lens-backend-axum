@@ -4,16 +4,20 @@ use crate::state::AppState;
 use axum::http::{header, HeaderValue, Method};
 use std::net::{IpAddr, SocketAddr};
 use std::sync::Arc;
+use axum::middleware;
 use tokio::net::TcpListener;
 use tower_http::cors::{AllowOrigin, CorsLayer};
+use crate::middleware::auth::authorize;
 
 pub async fn start_server(ip_addr: IpAddr, port: u16, state: AppState) {
-    let state1 = Arc::new(state);
+    let state = Arc::new(state);
+    let state1 = Arc::clone(&state);
 
     let person_router = person::router(state1);
 
     let app = person_router
-        .layer(create_cors_layer());
+        .layer(create_cors_layer())
+        .layer(middleware::from_fn(move |r, n| authorize(Arc::clone(&state), r, n)));
 
     let address = SocketAddr::new(ip_addr, port);
     let listener = TcpListener::bind(address).await.unwrap();
