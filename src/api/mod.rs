@@ -1,4 +1,5 @@
 mod person;
+mod relationship;
 
 use crate::state::AppState;
 use axum::http::{header, HeaderValue, Method};
@@ -12,10 +13,13 @@ use crate::middleware::auth::authorize;
 pub async fn start_server(ip_addr: IpAddr, port: u16, state: AppState) {
     let state = Arc::new(state);
     let state1 = Arc::clone(&state);
+    let state2 = Arc::clone(&state1);
 
     let person_router = person::router(state1);
+    let relationship_router = relationship::router(state2);
 
     let app = person_router
+        .merge(relationship_router)
         .layer(create_cors_layer())
         .layer(middleware::from_fn(move |r, n| authorize(Arc::clone(&state), r, n)));
 
