@@ -1,4 +1,5 @@
 mod get;
+mod post;
 
 use crate::state::AppState;
 use axum::routing::get;
@@ -7,6 +8,6 @@ use std::sync::Arc;
 
 pub fn router(state: Arc<AppState>) -> Router {
     Router::new()
-        .route("/person", get(get::get))
+        .route("/person", get(get::get).post(post::post))
         .with_state(state)
 }
