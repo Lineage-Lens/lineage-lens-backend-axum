@@ -9,9 +9,24 @@ pub struct PersonRepository {
 
 impl Repository<Person, Error> for PersonRepository {
     async fn find_all(&self) -> Vec<Person> {
-        sqlx::query_as!(
-            Person,
-            "SELECT * FROM person"
+        sqlx::query_as(
+        "SELECT
+                p.id,
+                p.first_name,
+                p.last_name,
+                p.birth_date,
+                p.gender,
+                p.father_id,
+                p.mother_id,
+                COALESCE(
+                    JSON_ARRAYAGG(c.id),
+                    JSON_ARRAY()
+                ) AS children_ids
+            FROM person p
+            LEFT JOIN person c
+                ON c.father_id = p.id
+                OR c.mother_id = p.id
+            GROUP BY p.id;"
         ).fetch_all(self.pool.as_ref()).await.unwrap_or_else(|_| Vec::new())
     }
 
