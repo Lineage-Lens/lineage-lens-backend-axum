@@ -7,15 +7,15 @@ use std::ops::{Deref, DerefMut};
 
 #[derive(Clone, Serialize, Deserialize)]
 pub enum Gender {
-    MALE,
-    FEMALE
+    Male,
+    Female
 }
 
 impl Gender {
     pub fn to_string(&self) -> String {
         match self {
-            Gender::MALE => "MALE",
-            Gender::FEMALE => "FEMALE"
+            Gender::Male => "MALE",
+            Gender::Female => "FEMALE"
         }.to_string()
     }
 }
@@ -23,9 +23,9 @@ impl Gender {
 impl From<String> for Gender {
     fn from(value: String) -> Self {
         match value.as_str() {
-            "MALE" => Gender::MALE,
-            "FEMALE" => Gender::FEMALE,
-            _ => Gender::MALE
+            "MALE" => Gender::Male,
+            "FEMALE" => Gender::Female,
+            _ => Gender::Male
         }
     }
 }
