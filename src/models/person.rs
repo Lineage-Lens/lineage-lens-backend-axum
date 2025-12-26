@@ -1,8 +1,11 @@
 use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
-use sqlx::mysql::MySqlRow;
-use sqlx::{Error, Row};
+use sqlx::mysql::{MySqlRow, MySqlTypeInfo, MySqlValueRef};
+use sqlx::types::Json;
+use sqlx::{Decode, Error, MySql, Row, Type};
+use std::ops::{Deref, DerefMut};
 
+use crate::models::relationship::Relationship;
 use crate::models::util::IntVec;
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -41,6 +44,8 @@ pub struct Person {
     pub mother_id: Option<i32>,
     #[sqlx(skip)]
     pub children_ids: IntVec,
+    #[sqlx(skip)]
+    pub relationships: RelationshipVec,
 }
 
 impl <'r>sqlx::FromRow<'r, MySqlRow> for Person {
@@ -57,6 +62,41 @@ impl <'r>sqlx::FromRow<'r, MySqlRow> for Person {
             father_id: row.try_get("father_id")?,
             mother_id: row.try_get("mother_id")?,
             children_ids: row.try_get("children_ids").unwrap_or_default(),
+            relationships: row.try_get("relationships").unwrap_or_default(),
         });
+    }
+}
+
+#[derive(Default, Clone, Serialize, Deserialize)]
+pub struct RelationshipVec(pub Vec<Relationship>);
+
+impl Deref for RelationshipVec {
+    type Target = Vec<Relationship>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl DerefMut for RelationshipVec {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+
+impl<'r> Decode<'r, sqlx::MySql> for RelationshipVec {
+    fn decode(value: MySqlValueRef<'r>) -> Result<Self, sqlx::error::BoxDynError> {
+        let json: Json<Vec<Relationship>> = Json::decode(value)?;
+        Ok(RelationshipVec(json.0))
+    }
+}
+
+impl Type<MySql> for RelationshipVec {
+    fn type_info() -> <MySql as sqlx::Database>::TypeInfo {
+        <Json<Vec<Relationship>>>::type_info()
+    }
+
+    fn compatible(ty: &MySqlTypeInfo) -> bool {
+        <Json<Vec<Relationship>> as Type<MySql>>::compatible(ty)
     }
 }

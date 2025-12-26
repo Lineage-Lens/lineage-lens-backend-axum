@@ -21,7 +21,32 @@ impl Repository<Person, Error> for PersonRepository {
                 COALESCE(
                     JSON_ARRAYAGG(c.id),
                     JSON_ARRAY()
-                ) AS children_ids
+                ) AS children_ids,
+                COALESCE(
+                    (
+                        SELECT JSON_ARRAYAGG(
+                            JSON_OBJECT(
+                                'id', r.id,
+                                'relationship_type', CONCAT(
+                                    UPPER(LEFT(r.relationship_type, 1)),
+                                    LOWER(SUBSTRING(r.relationship_type, 2))
+                                ),
+                                'start_date', r.start_date,
+                                'people_ids',
+                                    (
+                                        SELECT JSON_ARRAYAGG(prl2.person_id)
+                                        FROM person_relationship_link prl2
+                                        WHERE prl2.relationship_id = r.id
+                                    )
+                            )
+                        )
+                        FROM person_relationship_link prl
+                        JOIN relationship r
+                            ON r.id = prl.relationship_id
+                        WHERE prl.person_id = p.id
+                    ),
+                    JSON_ARRAY()
+                ) AS relationships
             FROM person p
             LEFT JOIN person c
                 ON c.father_id = p.id
