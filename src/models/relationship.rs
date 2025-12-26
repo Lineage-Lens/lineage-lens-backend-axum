@@ -3,17 +3,17 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Serialize, Deserialize)]
 pub enum RelationshipType {
-    DATING,
-    ENGAGED,
-    MARRIED,
+    Dating,
+    Engaged,
+    Married,
 }
 
 impl RelationshipType {
     pub fn to_string(&self) -> String {
         match self {
-            RelationshipType::DATING => "DATING",
-            RelationshipType::ENGAGED => "ENGAGED",
-            RelationshipType::MARRIED => "MARRIED"
+            RelationshipType::Dating => "DATING",
+            RelationshipType::Engaged => "ENGAGED",
+            RelationshipType::Married => "MARRIED"
         }.to_string()
     }
 }
@@ -21,10 +21,10 @@ impl RelationshipType {
 impl From<String> for RelationshipType {
     fn from(value: String) -> Self {
         match value.as_str() {
-            "DATING" => RelationshipType::DATING,
-            "ENGAGED" => RelationshipType::ENGAGED,
-            "MARRIED" => RelationshipType::MARRIED,
-            _ => RelationshipType::DATING
+            "DATING" => RelationshipType::Dating,
+            "ENGAGED" => RelationshipType::Engaged,
+            "MARRIED" => RelationshipType::Married,
+            _ => RelationshipType::Dating
         }
     }
 }
