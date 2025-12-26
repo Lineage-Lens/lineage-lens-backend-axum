@@ -1,39 +1,25 @@
-use crate::models::relationship::{Relationship, RelationshipType};
+use crate::models::relationship::Relationship;
 use crate::state::AppState;
 use axum::extract::State;
 use axum::http::StatusCode;
 use axum::Json;
-use chrono::NaiveDate;
-use serde::Deserialize;
 use std::sync::Arc;
 use crate::crud::repository::Repository;
 use crate::models::person_relationship_link::PersonRelationshipLink;
 
-#[derive(Deserialize)]
-pub struct CreateRelationship {
-    relationship_type: RelationshipType,
-    start_date: NaiveDate,
-
-    people: Vec<i32>,
-}
-
 pub async fn post(
     State(state): State<Arc<AppState>>,
-    Json(relationship_dto): Json<CreateRelationship>,
+    Json(mut relationship): Json<Relationship>,
 ) -> Result<(StatusCode, Json<Relationship>), (StatusCode, String)> {
-    let relationship = Relationship {
-        id: None,
-        relationship_type: relationship_dto.relationship_type,
-        start_date: relationship_dto.start_date,
-    };
+    relationship.id = None;
 
-    if relationship_dto.people.is_empty() {
+    if relationship.people_ids.is_empty() {
         return Err((StatusCode::BAD_REQUEST, String::new()));
     }
 
     return match state.relationship_repository.save(relationship).await {
         Ok(relationship) => {
-            let links: Vec<PersonRelationshipLink> = relationship_dto.people.iter().map(|p| PersonRelationshipLink {
+            let links: Vec<PersonRelationshipLink> = relationship.people_ids.iter().map(|p| PersonRelationshipLink {
                 person_id: *p,
                 relationship_id: relationship.id.unwrap(),
             }).collect();

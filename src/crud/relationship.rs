@@ -9,8 +9,7 @@ pub struct RelationshipRepository {
 
 impl Repository<Relationship, Error> for RelationshipRepository {
     async fn find_all(&self) -> Vec<Relationship> {
-        sqlx::query_as!(
-            Relationship,
+        sqlx::query_as(
             "SELECT * FROM relationship"
         ).fetch_all(self.pool.as_ref()).await.unwrap_or_else(|_| Vec::new())
     }
