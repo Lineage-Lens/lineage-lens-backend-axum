@@ -1,0 +1,13 @@
+### POST relationship
+POST {{ baseUrl }}/relationship
+Authorization: Bearer {{ token }}
+Content-Type: application/json
+
+{
+  "relationship_type": "Married",
+  "start_date": "2003-03-03",
+  "people_ids": [
+    1,
+    2
+  ]
+}
