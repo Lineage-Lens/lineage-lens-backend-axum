@@ -1,0 +1,11 @@
+### POST person
+POST {{ baseUrl }}/person
+Authorization: Bearer {{ token }}
+Content-Type: application/json
+
+{
+  "first_name": "John",
+  "last_name": "Doe",
+  "birth_date": "2001-01-01",
+  "gender": "Male"
+}
