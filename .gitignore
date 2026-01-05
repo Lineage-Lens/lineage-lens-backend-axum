@@ -3,3 +3,5 @@
 .idea
 
 .env
+
+api/http-client.private.env.json
