@@ -1,0 +1,3 @@
+### GET person
+GET {{ baseUrl }}/person
+Authorization: Bearer {{ token }}
