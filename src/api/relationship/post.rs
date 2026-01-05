@@ -13,7 +13,7 @@ pub async fn post(
 ) -> Result<(StatusCode, Json<Relationship>), (StatusCode, String)> {
     relationship.id = None;
 
-    if relationship.people_ids.is_empty() {
+    if relationship.people_ids.len() < 2 {
         return Err((StatusCode::BAD_REQUEST, String::new()));
     }
 
