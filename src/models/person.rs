@@ -43,8 +43,10 @@ pub struct Person {
     pub father_id: Option<i32>,
     pub mother_id: Option<i32>,
     #[sqlx(skip)]
+    #[serde(default)]
     pub children_ids: IntVec,
     #[sqlx(skip)]
+    #[serde(default)]
     pub relationships: RelationshipVec,
 }
 
