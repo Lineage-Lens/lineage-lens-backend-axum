@@ -26,9 +26,9 @@ pub async fn post(
 
             return match state.person_relationship_link_repository.save_all(links).await {
                 Ok(_) => Ok((StatusCode::CREATED, Json(relationship))),
-                Err(err) => Err((StatusCode::BAD_REQUEST, err.to_string())),
+                Err(err) => Err((StatusCode::INTERNAL_SERVER_ERROR, err.to_string())),
             };
         },
-        Err(err) => Err((StatusCode::BAD_REQUEST, err.to_string())),
+        Err(err) => Err((StatusCode::INTERNAL_SERVER_ERROR, err.to_string())),
     };
 }
