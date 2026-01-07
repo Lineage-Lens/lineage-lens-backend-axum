@@ -1,4 +1,4 @@
-mod get;
+pub mod get;
 mod post;
 
 use crate::state::AppState;
