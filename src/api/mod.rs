@@ -8,9 +8,16 @@ use std::sync::Arc;
 use axum::middleware;
 use tokio::net::TcpListener;
 use tower_http::cors::{AllowOrigin, CorsLayer};
+use utoipa::OpenApi;
+use utoipa_swagger_ui::SwaggerUi;
 use crate::middleware::auth::authorize;
 
 pub async fn start_server(ip_addr: IpAddr, port: u16, state: AppState) {
+    #[derive(OpenApi)]
+    #[openapi(paths(
+    ))]
+    struct ApiDoc;
+
     let state = Arc::new(state);
     let state1 = Arc::clone(&state);
     let state2 = Arc::clone(&state1);
@@ -21,7 +28,8 @@ pub async fn start_server(ip_addr: IpAddr, port: u16, state: AppState) {
     let app = person_router
         .merge(relationship_router)
         .layer(create_cors_layer())
-        .layer(middleware::from_fn(move |r, n| authorize(Arc::clone(&state), r, n)));
+        .layer(middleware::from_fn(move |r, n| authorize(Arc::clone(&state), r, n)))
+        .merge(SwaggerUi::new("/swagger-ui").url("/openapi.json", ApiDoc::openapi()));
 
     let address = SocketAddr::new(ip_addr, port);
     let listener = TcpListener::bind(address).await.unwrap();
