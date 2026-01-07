@@ -1,4 +1,4 @@
-mod post;
+pub mod post;
 
 use crate::state::AppState;
 use axum::routing::post;

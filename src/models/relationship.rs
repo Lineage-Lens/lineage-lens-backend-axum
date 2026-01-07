@@ -33,7 +33,8 @@ impl From<String> for RelationshipType {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, sqlx::FromRow, utoipa::ToSchema)]
+#[derive(Clone, Serialize, Deserialize, sqlx::FromRow, utoipa::ToSchema, utoipa::IntoParams)]
+#[into_params(parameter_in = Query)]
 pub struct Relationship {
     pub id: Option<i32>,
     pub relationship_type: RelationshipType,
