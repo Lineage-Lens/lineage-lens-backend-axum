@@ -14,6 +14,6 @@ pub async fn post(
     let result = state.person_repository.save(person).await;
     return match result {
         Ok(person) => Ok((StatusCode::CREATED, Json::from(person))),
-        Err(err) => Err((StatusCode::BAD_REQUEST, err.to_string()))
+        Err(err) => Err((StatusCode::INTERNAL_SERVER_ERROR, err.to_string()))
     };
 }
