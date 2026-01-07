@@ -4,7 +4,7 @@ use sqlx::types::Json;
 use sqlx::{Decode, MySql, Type};
 use std::ops::{Deref, DerefMut};
 
-#[derive(Default, Clone, Serialize, Deserialize)]
+#[derive(Default, Clone, Serialize, Deserialize, utoipa::ToSchema)]
 pub struct IntVec(pub Vec<i32>);
 
 impl Deref for IntVec {

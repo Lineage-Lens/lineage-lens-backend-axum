@@ -8,7 +8,7 @@ use std::ops::{Deref, DerefMut};
 use crate::models::relationship::Relationship;
 use crate::models::util::IntVec;
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, utoipa::ToSchema)]
 pub enum Gender {
     Male,
     Female
@@ -33,7 +33,7 @@ impl From<String> for Gender {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, sqlx::FromRow)]
+#[derive(Clone, Serialize, Deserialize, sqlx::FromRow, utoipa::ToSchema)]
 pub struct Person {
     pub id: Option<i32>,
     pub first_name: String,
@@ -69,7 +69,7 @@ impl <'r>sqlx::FromRow<'r, MySqlRow> for Person {
     }
 }
 
-#[derive(Default, Clone, Serialize, Deserialize)]
+#[derive(Default, Clone, Serialize, Deserialize, utoipa::ToSchema)]
 pub struct RelationshipVec(pub Vec<Relationship>);
 
 impl Deref for RelationshipVec {

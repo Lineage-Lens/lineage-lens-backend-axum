@@ -5,7 +5,7 @@ use sqlx::{Error, Row};
 
 use crate::models::util::IntVec;
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, utoipa::ToSchema)]
 pub enum RelationshipType {
     Dating,
     Engaged,
@@ -33,7 +33,7 @@ impl From<String> for RelationshipType {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, sqlx::FromRow)]
+#[derive(Clone, Serialize, Deserialize, sqlx::FromRow, utoipa::ToSchema)]
 pub struct Relationship {
     pub id: Option<i32>,
     pub relationship_type: RelationshipType,
