@@ -6,6 +6,18 @@ use axum::Json;
 use std::sync::Arc;
 use crate::crud::repository::Repository;
 
+#[utoipa::path(
+    post,
+    path = "/person",
+    tag = "person",
+    params(Person),
+    responses(
+        (status = StatusCode::CREATED, description = "Created new person", body = Person),
+        (status = StatusCode::UNAUTHORIZED, description = "Bearer Token is missing or invalid"),
+        (status = StatusCode::UNPROCESSABLE_ENTITY, description = "Field is missing", body = String),
+        (status = StatusCode::INTERNAL_SERVER_ERROR, description = "Error during persisting", body = String),
+    ),
+)]
 pub async fn post(
     State(state): State<Arc<AppState>>,
     Json(mut person): Json<Person>,

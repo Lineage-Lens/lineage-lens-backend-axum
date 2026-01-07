@@ -16,6 +16,7 @@ pub async fn start_server(ip_addr: IpAddr, port: u16, state: AppState) {
     #[derive(OpenApi)]
     #[openapi(paths(
         person::get::get,
+        person::post::post,
     ))]
     struct ApiDoc;
 
