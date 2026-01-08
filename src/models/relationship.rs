@@ -41,6 +41,7 @@ pub struct Relationship {
     pub relationship_type: RelationshipType,
     pub start_date: NaiveDate,
     #[sqlx(skip)]
+    #[schema(value_type = Vec<i32>, min_items = 2)]
     pub people_ids: IntVec,
 }
 
