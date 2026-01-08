@@ -22,10 +22,8 @@ use crate::models::person_relationship_link::PersonRelationshipLink;
 )]
 pub async fn post(
     State(state): State<Arc<AppState>>,
-    Json(mut relationship): Json<Relationship>,
+    Json(relationship): Json<Relationship>,
 ) -> Result<(StatusCode, Json<Relationship>), (StatusCode, String)> {
-    relationship.id = None;
-
     if relationship.people_ids.len() < 2 {
         return Err((StatusCode::BAD_REQUEST, String::new()));
     }

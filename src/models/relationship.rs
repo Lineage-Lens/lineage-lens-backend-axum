@@ -36,6 +36,7 @@ impl From<String> for RelationshipType {
 #[derive(Clone, Serialize, Deserialize, sqlx::FromRow, utoipa::ToSchema, utoipa::IntoParams)]
 #[into_params(parameter_in = Query)]
 pub struct Relationship {
+    #[serde(skip_deserializing)]
     pub id: Option<i32>,
     pub relationship_type: RelationshipType,
     pub start_date: NaiveDate,
