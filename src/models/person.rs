@@ -33,7 +33,7 @@ impl From<String> for Gender {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, sqlx::FromRow, utoipa::ToSchema, utoipa::IntoParams)]
+#[derive(Clone, Serialize, Deserialize, sqlx::FromRow, utoipa::ToSchema)]
 pub struct Person {
     #[serde(skip_deserializing)]
     pub id: Option<i32>,

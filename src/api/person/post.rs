@@ -10,7 +10,7 @@ use crate::crud::repository::Repository;
     post,
     path = "/person",
     tag = "person",
-    params(Person),
+    request_body = Person,
     responses(
         (status = StatusCode::CREATED, description = "Created new person", body = Person),
         (status = StatusCode::UNAUTHORIZED, description = "Bearer Token is missing or invalid"),
