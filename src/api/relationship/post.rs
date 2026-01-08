@@ -11,7 +11,7 @@ use crate::models::person_relationship_link::PersonRelationshipLink;
     post,
     path = "/relationship",
     tag = "relationship",
-    params(Relationship),
+    request_body = Relationship,
     responses(
         (status = StatusCode::CREATED, description = "Created new relationship", body = Relationship),
         (status = StatusCode::BAD_REQUEST, description = "Less than two ids of people (people_ids) given", body = String),
