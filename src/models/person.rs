@@ -36,6 +36,7 @@ impl From<String> for Gender {
 #[derive(Clone, Serialize, Deserialize, sqlx::FromRow, utoipa::ToSchema)]
 pub struct Person {
     #[serde(skip_deserializing)]
+    #[schema(value_type = i32, read_only = true)]
     pub id: Option<i32>,
     pub first_name: String,
     pub last_name: String,
@@ -45,9 +46,11 @@ pub struct Person {
     pub mother_id: Option<i32>,
     #[sqlx(skip)]
     #[serde(skip_deserializing)]
+    #[schema(read_only = true)]
     pub children_ids: IntVec,
     #[sqlx(skip)]
     #[serde(skip_deserializing)]
+    #[schema(read_only = true)]
     pub relationships: RelationshipVec,
 }
 
